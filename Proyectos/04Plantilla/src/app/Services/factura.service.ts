@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class FacturaService {
-  apiurl = 'http://localhost/sexto/Proyectos/03MVC/controllers/factura.controller.php?op=';
+  apiurl = 'http://localhost/Proyectos/Proyectos/03MVC/controllers/factura.controller.php?op=';
 
   constructor(private lector: HttpClient) {}
 

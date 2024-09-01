@@ -15,10 +15,19 @@ export class FacturasComponent implements OnInit {
   listafacturas: IFactura[] = [];
   constructor(private facturaServicio: FacturaService) {}
   ngOnInit(): void {
-    this.facturaServicio.todos().subscribe((data: IFactura[]) => {
-      this.listafacturas = data;
-    });
+    this.llenardatostabla();
   }
-
-  eliminar(idFactura) {}
+llenardatostabla(){
+  this.facturaServicio.todos().subscribe((data: IFactura[]) => {
+    this.listafacturas = data;
+  });
+}
+  eliminar(idFactura) {
+    this.facturaServicio.eliminar(idFactura).subscribe(
+      (res)=>{
+        console.log(res)
+        this.llenardatostabla();
+      }
+    );
+  }
 }

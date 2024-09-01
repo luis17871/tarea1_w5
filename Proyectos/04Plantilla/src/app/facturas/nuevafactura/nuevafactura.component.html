@@ -12,7 +12,7 @@
       <form [formGroup]="frm_factura" novalidate (ngSubmit)="grabar()">
         <div class="form-group mb-3">
           <label class="form-label">Cliente</label>
-          <select class="form-control" (change)="cambio($event)">
+          <select class="form-control" (change)="cambio($event)" formControlName="Clientes_idClientes">
             <option>Seleccione una opcion</option>
             @for (cliente of listaClientes; track $index) {
               <option value="{{ cliente.idClientes }}">{{ cliente.Nombres }}</option>

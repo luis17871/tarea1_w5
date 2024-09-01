@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router, Event } from '@angular/router';
+import { Router, Event, ActivatedRoute } from '@angular/router';
 import { IFactura } from 'src/app/Interfaces/factura';
 import { ICliente } from 'src/app/Interfaces/icliente';
 import { ClientesService } from 'src/app/Services/clientes.service';
@@ -16,6 +16,7 @@ import { FacturaService } from 'src/app/Services/factura.service';
 export class NuevafacturaComponent implements OnInit {
   //variables o constantes
   titulo = 'Nueva Factura';
+  idFactura:number=0;
   listaClientes: ICliente[] = [];
   listaClientesFiltrada: ICliente[] = [];
   totalapagar: number = 0;
@@ -24,6 +25,7 @@ export class NuevafacturaComponent implements OnInit {
 
   ///////
   constructor(
+    private ruta:ActivatedRoute,
     private clietesServicios: ClientesService,
     private facturaService: FacturaService,
     private navegacion: Router
@@ -47,23 +49,65 @@ export class NuevafacturaComponent implements OnInit {
         console.log(e);
       }
     });
+    
+    this.idFactura = parseInt(this.ruta.snapshot.paramMap.get('id'));
+    if(this.idFactura>0){
+       this.unofactura(this.idFactura);
+    }
   }
 
-  grabar() {
-    let factura: IFactura = {
-      Fecha: this.frm_factura.get('Fecha')?.value,
-      Sub_total: this.frm_factura.get('Sub_total')?.value,
-      Sub_total_iva: this.frm_factura.get('Sub_total_iva')?.value,
-      Valor_IVA: this.frm_factura.get('Valor_IVA')?.value,
-      Clientes_idClientes: this.frm_factura.get('Clientes_idClientes')?.value
-    };
+unofactura(idfactura:number){
+this.facturaService.uno(idfactura).subscribe(
+  (res)=>{
+    console.log(res)
+    this.frm_factura.get("Fecha").setValue(res.Fecha.split(" ")[0])
+    this.frm_factura.get("Sub_total").setValue(res.Sub_total)
+    //this.frm_factura.get("Sub_total_iva").setValue(res.Sub_total_iva)
+    this.frm_factura.get("Valor_IVA").setValue(res.Valor_IVA)
+    this.frm_factura.get("Clientes_idClientes").setValue(res.Clientes_idClientes)
+    this.calculos()
+  }
+)
+this.titulo="Editar Factura"
 
-    this.facturaService.insertar(factura).subscribe((respuesta) => {
-      if (parseInt(respuesta) > 0) {
-        alert('Factura grabada');
-        this.navegacion.navigate(['/facturas']);
-      }
-    });
+
+}
+
+  grabar() {
+    if(this.idFactura>0){
+      let factura: IFactura = {
+        idFactura:this.idFactura,
+        Fecha: this.frm_factura.get('Fecha')?.value,
+        Sub_total: this.frm_factura.get('Sub_total')?.value,
+        Sub_total_iva: this.frm_factura.get('Sub_total_iva')?.value,
+        Valor_IVA: this.frm_factura.get('Valor_IVA')?.value,
+        Clientes_idClientes: this.frm_factura.get('Clientes_idClientes')?.value
+      };
+      this.facturaService.actualizar(factura).subscribe(
+        (res)=>{
+          alert("Factura Actualizada")
+          this.navegacion.navigate(['/facturas']);
+        }
+      )
+    }
+    else
+    {
+      let factura: IFactura = {
+        Fecha: this.frm_factura.get('Fecha')?.value,
+        Sub_total: this.frm_factura.get('Sub_total')?.value,
+        Sub_total_iva: this.frm_factura.get('Sub_total_iva')?.value,
+        Valor_IVA: this.frm_factura.get('Valor_IVA')?.value,
+        Clientes_idClientes: this.frm_factura.get('Clientes_idClientes')?.value
+      };
+      this.facturaService.insertar(factura).subscribe((respuesta) => {
+        if (parseInt(respuesta) > 0) {
+          alert('Factura grabada');
+          this.navegacion.navigate(['/facturas']);
+        }
+      });
+    }
+
+    
   }
   calculos() {
     let sub_total = this.frm_factura.get('Sub_total')?.value;

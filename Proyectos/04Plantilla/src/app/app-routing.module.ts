@@ -36,12 +36,12 @@ const routes: Routes = [
       {
         path: 'proveedores',
         loadComponent: () => import('./proveedores/proveedores.component').then((m) => m.ProveedoresComponent),
-        canActivate: [usuariosGuardGuard]
+        //canActivate: [usuariosGuardGuard]
       },
       {
         path: 'nuevoproveedor',
         loadComponent: () => import('./proveedores/nuevoproveedor/nuevoproveedor.component').then((m) => m.NuevoproveedorComponent),
-        canActivate: [usuariosGuardGuard]
+        //canActivate: [usuariosGuardGuard]
       },
       {
         path: 'editarproveedor/:id',
@@ -70,7 +70,7 @@ const routes: Routes = [
       {
         path: 'nuevafactura',
         loadComponent: () => import('./facturas/nuevafactura/nuevafactura.component').then((m) => m.NuevafacturaComponent),
-        canActivate: [usuariosGuardGuard]
+        //canActivate: [usuariosGuardGuard]
       },
       {
         path: 'facturas',
